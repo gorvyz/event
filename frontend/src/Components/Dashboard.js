@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import contract from "../Artifacts/Bank.json";
-const BankContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-const abi = contract.abi;
 
 const Dashboard = ({ address }) => {
   const [hasDeposits, setHasDeposits] = useState(false);
@@ -11,6 +8,7 @@ const Dashboard = ({ address }) => {
   const [withdrawalAmount, setWithdrawalAmount] = useState();
   const [transferAmount, setTransferAmount] = useState();
   const [transferAddress, setTransferAddress] = useState("");
+  
   const getBalance = async () => {
     try {
       if (window.ethereum) {
@@ -81,30 +79,6 @@ const Dashboard = ({ address }) => {
   };
   const handleTransfer = async (event) => {
     event.preventDefault();
-    try {
-      if (window.ethereum) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const BankContract = new ethers.Contract(
-          BankContractAddress,
-          abi,
-          signer
-        );
-        const tx = await BankContract.transfer(
-          transferAddress,
-          ethers.utils.parseEther(transferAmount)
-        );
-        await tx.wait();
-        alert(
-          `Transfer of ${transferAmount} Ether to address: ${transferAddress} Successful`
-        );
-        setTransferAddress("");
-        setTransferAmount("");
-        getBalance();
-      }
-    } catch (e) {
-      console.error(e);
-    }
   };
   useEffect(() => {
     getBalance();
